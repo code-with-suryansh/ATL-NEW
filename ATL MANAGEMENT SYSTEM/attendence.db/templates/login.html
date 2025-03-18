@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-wrapper">
+        <div class="login-header">
+            <h2 class="login-title">ATAL TINKERING LAB</h2>
+            <p class="login-subtitle">Welcome back! Please login to continue.</p>
+        </div>
+        
+        <div class="login-card">
+            <div class="login-body">
+                <form method="POST" class="login-form">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user me-2"></i>Username
+                        </label>
+                        <input type="text" name="username" class="form-control form-control-lg" 
+                               placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <div class="password-group">
+                            <input type="password" name="password" id="password" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Enter your password" required>
+                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                <i class="fa fa-eye" id="eye-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg login-button">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>{{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eye-icon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+</script>
+
+<style>
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.login-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.login-title {
+    color: white;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin: 0;
+    text-align: center;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.login-subtitle {
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+.login-body {
+    padding: 24px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.password-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.password-group .form-control {
+    border-radius: 10px 0 0 10px;
+}
+
+.password-group .btn {
+    border-radius: 0 10px 10px 0;
+    width: 50px;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    height: 50px;
+    border-radius: 10px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--light-blue);
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.1);
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.5);
+}
+
+.form-label {
+    color: white;
+    font-weight: 500;
+}
+
+.login-button {
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    background: var(--light-blue);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover {
+    background: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.alert {
+    border: none;
+    color: white;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+}
+</style>
+{% endblock %} 

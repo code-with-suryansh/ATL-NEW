@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ATL Lab Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0a2647;
+            --secondary-blue: #144272;
+            --accent-blue: #205295;
+            --light-blue: #2c74b3;
+            --white: #ffffff;
+        }
+
+        body {
+            background: var(--primary-blue);
+            color: var(--white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%), 
+                linear-gradient(-45deg, rgba(255,255,255,0.05) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.05) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.05) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        .sidebar {
+            background: var(--secondary-blue);
+            min-height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--accent-blue);
+            color: white !important;
+            border-left: 4px solid var(--light-blue);
+        }
+
+        .card {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--accent-blue));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stats-card h3 {
+            font-size: 2rem;
+            margin: 0;
+            color: white;
+        }
+
+        .stats-card p {
+            color: rgba(255,255,255,0.8);
+            margin: 0;
+        }
+
+        .table {
+            color: white;
+        }
+
+        .table thead th {
+            background: var(--secondary-blue);
+            border: none;
+        }
+
+        .table td {
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .form-control {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--light-blue);
+            color: white;
+            box-shadow: none;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background: var(--light-blue);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue);
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .profile-section img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .attendance-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .attendance-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            border-radius: 4px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .status-present {
+            background: #2ecc71;
+        }
+
+        .status-absent {
+            background: #e74c3c;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 12vw;
+            font-weight: 900;
+            color: rgba(69, 90, 100, 0.04);
+            white-space: nowrap;
+            z-index: -1;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            pointer-events: none;
+            width: 100%;
+            text-align: center;
+            font-family: 'Arial Black', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .watermark-small {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar - Hide only on login page -->
+        {% if session.user_role or request.endpoint != 'login' %}
+        <div class="sidebar">
+            <div class="profile-section">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Profile">
+                <h5 class="mb-0 text-white">
+                    {% if session.user_role == 'developer' %}
+                        Core Member Team
+                    {% elif session.user_role == 'teacher' %}
+                        Teacher
+                    {% elif session.user_role == 'attendance_marker' %}
+                        Management Team
+                    {% else %}
+                        {{ session.get('student_name', '') }}
+                    {% endif %}
+                </h5>
+                <small class="text-light">ATL DAV BAKHRI</small>
+            </div>
+            
+            <div class="nav flex-column">
+                {% if session.user_role in ['developer', 'teacher'] %}
+                    <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'add_student' %}active{% endif %}" href="{{ url_for('add_student') }}">
+                        <i class="fas fa-user-plus mr-2"></i> Add Student
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'edit_student' %}active{% endif %}" href="{{ url_for('view_students') }}">
+                        <i class="fas fa-user-edit mr-2"></i> Edit Students
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'mark_attendance' %}active{% endif %}" href="{{ url_for('mark_attendance') }}">
+                        <i class="fas fa-clipboard-check mr-2"></i> Mark Attendance
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'view_students' %}active{% endif %}" href="{{ url_for('view_students') }}">
+                        <i class="fas fa-users mr-2"></i> View Students
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'check_attendance' %}active{% endif %}" href="{{ url_for('check_attendance') }}">
+                        <i class="fas fa-calendar-check mr-2"></i> Check Attendance
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'components' %}active{% endif %}" href="{{ url_for('components') }}">
+                        <i class="fas fa-box mr-2"></i> Components
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'projects' %}active{% endif %}" href="{{ url_for('projects') }}">
+                        <i class="fas fa-project-diagram mr-2"></i> Projects
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'broadcast' %}active{% endif %}" href="{{ url_for('broadcast') }}">
+                        <i class="fas fa-bullhorn mr-2"></i> Broadcast
+                    </a>
+                {% elif session.user_role == 'attendance_marker' %}
+                    <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'mark_attendance' %}active{% endif %}" href="{{ url_for('mark_attendance') }}">
+                        <i class="fas fa-clipboard-check mr-2"></i> Mark Attendance
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'view_students' %}active{% endif %}" href="{{ url_for('view_students') }}">
+                        <i class="fas fa-users mr-2"></i> View Students
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'check_attendance' %}active{% endif %}" href="{{ url_for('check_attendance') }}">
+                        <i class="fas fa-calendar-check mr-2"></i> Check Attendance
+                    </a>
+                {% else %}
+                    <a class="nav-link {% if request.endpoint == 'student_dashboard' %}active{% endif %}" href="{{ url_for('student_dashboard') }}">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'components' %}active{% endif %}" href="{{ url_for('components') }}">
+                        <i class="fas fa-box mr-2"></i> My Components
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'projects' %}active{% endif %}" href="{{ url_for('projects') }}">
+                        <i class="fas fa-project-diagram mr-2"></i> My Projects
+                    </a>
+                {% endif %}
+                
+                <div class="mt-auto">
+                    <a class="nav-link text-danger" href="{{ url_for('logout') }}">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Main Content - Adjust margin only on login page -->
+        <div class="main-content" {% if not session.user_role and request.endpoint == 'login' %}style="margin-left: 0;"{% endif %}>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="watermark">ATL DAV BAKHRI</div>
+    <div class="watermark-small">ATL DAV BAKHRI</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html> 

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0"><i class="fas fa-user-plus mr-2"></i>Add New Student</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Admission Number</label>
+                                <input type="text" name="admission_no" class="form-control" 
+                                       pattern="[A-Z]{3}[0-9]{4,}" 
+                                       placeholder="Format: ATL1234" 
+                                       title="Admission number should be 3 uppercase letters followed by 4 or more numbers"
+                                       required>
+                                <small class="text-muted">Format: 3 letters followed by 4 or more numbers (e.g., ATL1234)</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Student Name</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Father's Name</label>
+                                <input type="text" name="fathers_name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Mother's Name</label>
+                                <input type="text" name="mothers_name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Class</label>
+                                <input type="text" name="class" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Roll Number</label>
+                                <input type="number" name="roll" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Section</label>
+                                <input type="text" name="section" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Course</label>
+                                <select name="course" class="form-control" required>
+                                    <option value="">Select Course</option>
+                                    <option value="web_dev">Web Development</option>
+                                    <option value="python">Python Programming</option>
+                                    <option value="mechanical">Mechanical</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Date of Birth (DD/MM/YYYY)</label>
+                                <input type="text" class="form-control" name="dob" 
+                                       placeholder="DD/MM/YYYY" required 
+                                       pattern="\d{2}/\d{2}/\d{4}">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea name="address" class="form-control" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save mr-2"></i>Add Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

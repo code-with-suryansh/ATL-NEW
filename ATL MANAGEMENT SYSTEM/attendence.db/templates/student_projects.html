@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Projects - {{ student[1] }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Student Information</h5>
+            <p><strong>Class:</strong> {{ student[2] }}</p>
+            <p><strong>Roll Number:</strong> {{ student[3] }}</p>
+            <p><strong>Section:</strong> {{ student[4] }}</p>
+        </div>
+    </div>
+
+    {% if session.user_role == 'developer' %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Add New Project</h5>
+            <form action="{{ url_for('add_project', student_id=student[0]) }}" method="post">
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" name="project_name" 
+                           placeholder="Project Name" required>
+                </div>
+                <div class="form-group mb-3">
+                    <textarea class="form-control" name="description" 
+                              placeholder="Project Description" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Project</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Projects</h5>
+            {% if projects %}
+            <div class="list-group">
+                {% for project in projects %}
+                <a href="{{ url_for('project_details', project_id=project[0]) }}" 
+                   class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ project[2] }}</h5>
+                        <small>Started: {{ project[4] }}</small>
+                    </div>
+                    <p class="mb-1">{{ project[3] }}</p>
+                    <small>Status: {{ project[5] }} | Files: {{ project[6] }}</small>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No projects found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

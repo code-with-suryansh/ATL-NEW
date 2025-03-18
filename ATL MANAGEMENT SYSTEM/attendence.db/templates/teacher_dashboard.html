@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-12">
+            <h2 class="mb-4">Teacher Dashboard</h2>
+            
+            <!-- Stats Row -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Students</h5>
+                            <h2 class="mb-0">{{ total_students }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Present Today</h5>
+                            <h2 class="mb-0">{{ attendance_stats[0] or 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Absent Today</h5>
+                            <h2 class="mb-0">{{ attendance_stats[1] or 0 }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Student Management</h5>
+                            <div class="btn-group">
+                                <a href="{{ url_for('add_student') }}" class="btn btn-primary">Add Student</a>
+                                <a href="{{ url_for('view_students') }}" class="btn btn-info">View Students</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Attendance</h5>
+                            <div class="btn-group">
+                                <a href="{{ url_for('mark_attendance') }}" class="btn btn-primary">Mark Attendance</a>
+                                <a href="{{ url_for('check_attendance') }}" class="btn btn-info">Check Attendance</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Projects</h5>
+                            <div class="btn-group">
+                                <a href="{{ url_for('projects') }}" class="btn btn-primary">View Projects</a>
+                                <a href="{{ url_for('view_students') }}" class="btn btn-info">Create Project</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Communication</h5>
+                            <a href="{{ url_for('broadcast') }}" class="btn btn-primary">Send Broadcast</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Broadcasts -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Announcements</h5>
+                </div>
+                <div class="card-body">
+                    {% if broadcasts %}
+                    <div class="list-group">
+                        {% for broadcast in broadcasts %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ broadcast[0] }}</h6>
+                                <small>{{ broadcast[1] }}</small>
+                            </div>
+                            <small>By: {{ broadcast[2] }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted mb-0">No recent announcements.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

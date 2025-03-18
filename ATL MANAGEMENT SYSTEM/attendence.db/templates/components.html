@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Component Management</h2>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form class="form-inline" method="GET" action="{{ url_for('components') }}">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search components..." value="{{ search_query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if is_developer %}
+        <div class="col-md-6 text-right">
+            <button class="btn btn-success" data-toggle="modal" data-target="#addComponentModal">
+                <i class="fas fa-plus"></i> Add Component
+            </button>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Add Component Modal -->
+    {% if is_developer %}
+    <div class="modal fade" id="addComponentModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Component</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{{ url_for('add_component') }}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="text-dark">Component Name</label>
+                            <input type="text" name="component_name" class="form-control text-dark" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="text-dark">Total Quantity</label>
+                            <input type="number" name="total_quantity" class="form-control text-dark" required min="1">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Component</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Components List</h5>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Component Name</th>
+                            <th>Total Quantity</th>
+                            <th>Available Quantity</th>
+                            <th>Issued Quantity</th>
+                            {% if is_developer %}
+                            <th>Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for component in components %}
+                        <tr>
+                            <td>{{ component[1] }}</td>
+                            <td>{{ component[2] }}</td>
+                            <td>{{ component[3] }}</td>
+                            <td>{{ component[2] - component[3] }}</td>
+                            {% if is_developer %}
+                            <td>
+                                {% if component[2] == component[3] %}
+                                <form action="{{ url_for('remove_component', component_id=component[0]) }}" 
+                                      method="POST" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to remove this component?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-danger btn-sm" disabled title="Cannot remove component with active issues">
+                                    <i class="fas fa-trash"></i> Remove
+                                </button>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Mark Attendance - {{ today }}</h2>
+{% if students %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Roll Number</th>
+            <th>Section</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <td>{{ student[1] }}</td>
+            <td>{{ student[2] }}</td>
+            <td>{{ student[3] }}</td>
+            <td>{{ student[4] }}</td>
+            <td>
+                <form method="POST" class="d-inline">
+                    <input type="hidden" name="student_id" value="{{ student[0] }}">
+                    <button type="submit" name="status" value="present" class="btn btn-success btn-sm">Present</button>
+                    <button type="submit" name="status" value="absent" class="btn btn-danger btn-sm">Absent</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">
+    All students' attendance has been marked for today.
+</div>
+{% endif %}
+{% endblock %} 

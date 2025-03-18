@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-user mr-2"></i>Student Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Admission Number:</label>
+                        <p class="h5">{{ student[1] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Name:</label>
+                        <p class="h5">{{ student[2] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Father's Name:</label>
+                        <p class="h5">{{ student[3] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Mother's Name:</label>
+                        <p class="h5">{{ student[4] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Date of Birth:</label>
+                        <p class="h5">{{ student[12] }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Class:</label>
+                        <p class="h5">{{ student[5] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Section:</label>
+                        <p class="h5">{{ student[7] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Roll Number:</label>
+                        <p class="h5">{{ student[6] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Course:</label>
+                        <p class="h5">{{ student[8] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Email:</label>
+                        <p class="h5">{{ student[9] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Phone:</label>
+                        <p class="h5">{{ student[10] }}</p>
+                    </div>
+                    <div class="info-group mb-3">
+                        <label class="text-muted">Address:</label>
+                        <p class="h5">{{ student[11] }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if session.user_role == 'developer' %}
+            <div class="text-right mt-3">
+                <a href="{{ url_for('edit_student', student_id=student[0]) }}" 
+                   class="btn btn-primary">
+                    <i class="fas fa-edit mr-2"></i>Edit Details
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Attendance History -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-calendar-check mr-2"></i>Attendance History</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance %}
+                        <tr>
+                            <td>{{ record[0] }}</td>
+                            <td>
+                                <span class="badge badge-{{ 'success' if record[1] == 'present' else 'danger' }}">
+                                    {{ record[1] }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Components Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-box mr-2"></i>Issued Components</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Component Name</th>
+                            <th>Quantity</th>
+                            <th>Issue Date</th>
+                            <th>Return Date</th>
+                            {% if session.user_role == 'developer' %}
+                            <th>Action</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issued_components %}
+                        <tr>
+                            <td>{{ issue[1] }}</td>
+                            <td>{{ issue[2] }}</td>
+                            <td>{{ issue[3] }}</td>
+                            <td>{{ issue[4] or 'Not returned' }}</td>
+                            {% if session.user_role == 'developer' and not issue[4] %}
+                            <td>
+                                <a href="{{ url_for('return_component', issue_id=issue[0]) }}" 
+                                   class="btn btn-sm btn-primary">Return</a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if session.user_role == 'developer' %}
+            <div class="mt-3">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#issueComponentModal">
+                    <i class="fas fa-plus mr-2"></i>Issue New Component
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Issue Component Modal -->
+{% if session.user_role == 'developer' %}
+<div class="modal fade" id="issueComponentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Issue New Component</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ url_for('issue_component') }}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="student_id" value="{{ student[0] }}">
+                    <div class="form-group">
+                        <label class="text-dark">Component</label>
+                        <select name="component_id" class="form-control text-dark" required>
+                            {% for component in available_components %}
+                            <option value="{{ component[0] }}">
+                                {{ component[1] }} (Available: {{ component[3] }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="text-dark">Quantity</label>
+                        <input type="number" name="quantity" min="1" class="form-control text-dark" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Issue Component</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

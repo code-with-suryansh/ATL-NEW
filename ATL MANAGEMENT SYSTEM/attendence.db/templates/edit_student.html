@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Edit Student Details</h2>
+    <form method="POST" class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Admission Number</label>
+                        <input type="text" name="admission_no" class="form-control" 
+                               value="{{ student[1] }}" 
+                               pattern="[A-Z]{3}[0-9]{4,}" 
+                               placeholder="Format: ATL1234"
+                               title="Admission number should be 3 uppercase letters followed by 4 or more numbers (e.g., ATL1234, ATL12345)"
+                               required>
+                        <small class="text-muted">Format: 3 letters followed by 4 or more numbers (e.g., ATL1234, ATL12345)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Student Name</label>
+                        <input type="text" name="name" class="form-control" 
+                               value="{{ student[2] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Father's Name</label>
+                        <input type="text" name="fathers_name" class="form-control" 
+                               value="{{ student[3] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mother's Name</label>
+                        <input type="text" name="mothers_name" class="form-control" 
+                               value="{{ student[4] }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Class</label>
+                        <input type="text" name="class" class="form-control" 
+                               value="{{ student[5] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="number" name="roll" class="form-control" 
+                               value="{{ student[6] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Section</label>
+                        <input type="text" name="section" class="form-control" 
+                               value="{{ student[7] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Course</label>
+                        <select name="course" class="form-control" required>
+                            <option value="web_dev" {% if student[8] == 'web_dev' %}selected{% endif %}>
+                                Web Development
+                            </option>
+                            <option value="python" {% if student[8] == 'python' %}selected{% endif %}>
+                                Python Programming
+                            </option>
+                            <option value="mechanical" {% if student[8] == 'mechanical' %}selected{% endif %}>
+                                Mechanical
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Date of Birth (DD/MM/YYYY)</label>
+                        <input type="text" class="form-control" name="dob" 
+                               value="{{ student[12] }}" required 
+                               pattern="\d{2}/\d{2}/\d{4}"
+                               placeholder="DD/MM/YYYY">
+                        <small class="text-muted">Note: Changing DOB will also change the login password</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" 
+                               value="{{ student[9] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" class="form-control" 
+                               value="{{ student[10] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="address" class="form-control" rows="3" required>{{ student[11] }}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Update Student</button>
+                <a href="{{ url_for('student_details', student_id=student[0]) }}" 
+                   class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %} 
