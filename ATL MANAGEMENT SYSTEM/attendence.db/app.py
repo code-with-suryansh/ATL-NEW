@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file, jsonify
-from database.db_operations import DatabaseManager
+# Production
+import os
 from datetime import datetime
 import os
 import pdfkit
@@ -25,7 +26,8 @@ TEACHER_PASSWORD = "ATL_DAV"
 
 UPLOAD_FOLDER = 'static/project_files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-DB_PATH = 'attendance.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 
 def init_db():
     create_tables()
