@@ -27,7 +27,7 @@ TEACHER_PASSWORD = "ATL_DAV"
 UPLOAD_FOLDER = 'static/project_files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('https://github.com/code-with-suryansh/ATL-NEW/blob/main/ATL%20MANAGEMENT%20SYSTEM/attendence.db/attendance.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.('attendance.db')
 
 def init_db():
     create_tables()
