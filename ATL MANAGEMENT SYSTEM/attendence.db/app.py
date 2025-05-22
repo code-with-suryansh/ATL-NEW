@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file, jsonify
-# Production
-import os
+from database.db_operations import DatabaseManager
 from datetime import datetime
 import os
 import pdfkit
@@ -26,8 +25,7 @@ TEACHER_PASSWORD = "ATL_DAV"
 
 UPLOAD_FOLDER = 'static/project_files'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.('attendance.db')
+DB_PATH = 'attendance.db'
 
 def init_db():
     create_tables()
@@ -565,7 +563,8 @@ def issue_component():
     
     return redirect(url_for('student_details', student_id=student_id))
 
-@app.route('/return_component/<int:issue_id>', methods=['POST'])
+
+@app.route('/return_component/<int:issue_id>', methods=['GET', 'POST'])
 def return_component(issue_id):
     if session.get('user_role') not in ['developer', 'teacher']:
         flash('Access denied')
@@ -582,7 +581,13 @@ def return_component(issue_id):
             FROM issued_components 
             WHERE issue_id = ?
         ''', (issue_id,))
-        component_id, quantity = cursor.fetchone()
+        result = cursor.fetchone()
+        
+        if result is None:
+            flash('Issue record not found')
+            return redirect(url_for('components'))
+            
+        component_id, quantity = result
         
         # Update return date
         cursor.execute('''
@@ -602,9 +607,15 @@ def return_component(issue_id):
         
         # Get student_id for redirect
         cursor.execute('SELECT student_id FROM issued_components WHERE issue_id = ?', (issue_id,))
-        student_id = cursor.fetchone()[0]
-    
-    return redirect(url_for('student_details', student_id=student_id))
+        student_result = cursor.fetchone()
+        
+        if student_result:
+            student_id = student_result[0]
+            flash('Component returned successfully')
+            return redirect(url_for('student_details', student_id=student_id))
+        else:
+            flash('Component returned successfully')
+            return redirect(url_for('components'))
 
 @app.route('/remove_component/<int:component_id>', methods=['POST'])
 def remove_component(component_id):
